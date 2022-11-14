@@ -130,6 +130,7 @@ function(addIeTarget)
     if(WIN32)
         # Provide default compile pdb name equal to target name
         set_target_properties(${ARG_NAME} PROPERTIES COMPILE_PDB_NAME ${ARG_NAME})
+        target_link_options(${ARG_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${ARG_NAME}>)
     endif()
 endfunction()
 

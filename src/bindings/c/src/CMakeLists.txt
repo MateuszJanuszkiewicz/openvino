@@ -34,7 +34,6 @@ ie_add_vs_version_file(NAME ${TARGET_NAME}
 # export
 
 set_target_properties(${TARGET_NAME} PROPERTIES EXPORT_NAME runtime::c)
-target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
 
 ov_add_library_version(${TARGET_NAME})
 
