@@ -34,6 +34,10 @@ set_target_properties(${TARGET_NAME} PROPERTIES
     COMPILE_PDB_NAME ${TARGET_NAME}
     FOLDER tools
 )
+if(WIN32)
+    message("compile tool TARGET_NAME: ${TARGET_NAME}")
+    target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
+endif()
 
 add_cpplint_target(${TARGET_NAME}_cpplint FOR_TARGETS ${TARGET_NAME})
 
