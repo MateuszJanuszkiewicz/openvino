@@ -112,6 +112,8 @@ macro(ov_add_frontend)
         file(GLOB_RECURSE LIN_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/os/lin/*.cpp
                 ${CMAKE_CURRENT_SOURCE_DIR}/src/os/lin/*.hpp)
         list(REMOVE_ITEM LIBRARY_SRC "${LIN_FILES}")
+        message("frontends target_name: ${TARGET_NAME}")
+        target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
     else()
         # Remove windows specific files
         file(GLOB_RECURSE WIN_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/os/win/*.cpp

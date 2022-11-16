@@ -235,8 +235,6 @@ function(ie_headers_compilation_with_custom_flags)
 
     if(WIN32)
         set_target_properties(${target_name} PROPERTIES COMPILE_PDB_NAME ${target_name})
-        message("inference engine target_name: ${target_name}")
-        target_link_options(${target_name} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${target_name}>)
     endif()
 
     add_dependencies(${TARGET_NAME} ${target_name})

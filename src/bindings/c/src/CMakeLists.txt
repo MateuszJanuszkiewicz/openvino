@@ -13,6 +13,8 @@ add_library(openvino::runtime::c ALIAS ${TARGET_NAME})
 
 if(WIN32)
     set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+    message("openvino_c target_name: ${TARGET_NAME}")
+    target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
 endif()
 
 target_link_libraries(${TARGET_NAME} PRIVATE openvino)
