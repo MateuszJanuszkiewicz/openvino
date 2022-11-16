@@ -7,3 +7,8 @@ ov_add_frontend(NAME ir
                 LINK_LIBRARIES openvino::pugixml
                                # TODO: remove dependency below in CVS-69781
                                openvino::runtime::dev)
+
+if(WIN32)
+    message("openvino_ir_fronted target_name: ${TARGET_NAME}")
+    target_link_options(openvino_ir_frontend PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:openvino_ir_frontend>)
+endif()
