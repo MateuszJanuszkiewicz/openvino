@@ -84,6 +84,7 @@ function(ie_add_plugin)
 
         if(WIN32)
             set_target_properties(${IE_PLUGIN_NAME} PROPERTIES COMPILE_PDB_NAME ${IE_PLUGIN_NAME})
+            target_link_options(${IE_PLUGIN_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${IE_PLUGIN_NAME}>)
         endif()
 
         if(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_CROSSCOMPILING)
