@@ -16,6 +16,11 @@ add_library(${TARGET_NAME}
     $<TARGET_OBJECTS:inference_engine_lp_transformations_obj>)
 
 add_library(openvino::runtime ALIAS ${TARGET_NAME})
+
+if(WIN32)
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+endif()
+
 set_target_properties(${TARGET_NAME} PROPERTIES EXPORT_NAME runtime)
 ie_add_vs_version_file(NAME ${TARGET_NAME} FILEDESCRIPTION "OpenVINO runtime library")
 ie_add_api_validator_post_build_step(TARGET ${TARGET_NAME})

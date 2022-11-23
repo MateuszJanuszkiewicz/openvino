@@ -12,6 +12,10 @@ file(GLOB HEADERS ${InferenceEngine_C_API_SOURCE_DIR}/include/*.h)
 add_library(${TARGET_NAME} ${HEADERS} ${SOURCES})
 add_library(openvino::runtime::c ALIAS ${TARGET_NAME})
 
+if(WIN32)
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+endif()
+
 target_link_libraries(${TARGET_NAME} PRIVATE openvino)
 
 target_include_directories(${TARGET_NAME} PUBLIC
