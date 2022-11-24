@@ -278,15 +278,7 @@ if(ENABLE_INTEL_GNA)
             libGNA_INCLUDE_DIRS
             libGNA_LIBRARIES_BASE_PATH)
     set(GNA_VERSION "03.00.00.1910")
-    set(GNA_HASH "5dc0ee62b21d7c2c348c226ab9c8f6b98481e23095ab99debf5c33854da8a475")
-
-    if (WIN32)
-        set(GNA_PLATFORM_DIR win64 CACHE STRING "" FORCE)
-    elseif (UNIX)
-        set(GNA_PLATFORM_DIR linux CACHE STRING "" FORCE)
-    else ()
-        message(FATAL_ERROR "GNA not supported on this platform, only linux, and windows")
-    endif ()
+    set(GNA_HASH "894ddbc0ae3459f04513b853b0cabc32890dd4ea37228a022b6a32101bdbb7f8")
 
     set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
     if(WIN32)
@@ -296,7 +288,7 @@ if(ENABLE_INTEL_GNA)
     endif()
 
     RESOLVE_DEPENDENCY(GNA_EXT_DIR
-            ARCHIVE_UNIFIED "gna/GNA_${GNA_VERSION}.zip"
+            ARCHIVE_UNIFIED "gna/gna_${GNA_VERSION}.zip"
             TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
             VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
             FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
@@ -304,6 +296,14 @@ if(ENABLE_INTEL_GNA)
             USE_NEW_LOCATION TRUE)
     update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
     debug_message(STATUS "gna=" ${GNA_EXT_DIR})
+
+    if (WIN32)
+        set(GNA_PLATFORM_DIR win64 CACHE STRING "" FORCE)
+    elseif (UNIX)
+        set(GNA_PLATFORM_DIR linux CACHE STRING "" FORCE)
+    else ()
+        message(FATAL_ERROR "GNA not supported on this platform, only linux, and windows")
+    endif ()
 
     set(GNA_LIB_DIR x64 CACHE STRING "" FORCE)
     set(GNA_PATH ${GNA_EXT_DIR}/${GNA_PLATFORM_DIR}/${GNA_LIB_DIR} CACHE STRING "" FORCE)
