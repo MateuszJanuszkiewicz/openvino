@@ -317,22 +317,23 @@ if(ENABLE_INTEL_GNA)
             GNA_LIB_DIR
             libGNA_INCLUDE_DIRS
             libGNA_LIBRARIES_BASE_PATH)
-        set(GNA_VERSION "03.00.00.1455.2")
-        set(GNA_HASH "e52785d3f730fefb4e794bb7ab40c8676537ef2f7c69c5b4bb89a5d3cc0bbe60")
+    set(GNA_VERSION "03.00.00.1910")
+    set(GNA_HASH "894ddbc0ae3459f04513b853b0cabc32890dd4ea37228a022b6a32101bdbb7f8")
 
-        set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
-        if(WIN32)
-            LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/win64)
-        else()
-            LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/linux)
-        endif()
+    set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
+    if(WIN32)
+        LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/win64)
+    else()
+        LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/linux)
+    endif()
 
-        RESOLVE_DEPENDENCY(GNA_EXT_DIR
-                ARCHIVE_UNIFIED "GNA/GNA_${GNA_VERSION}.zip"
-                TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
-                VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
-                FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
-                SHA256 ${GNA_HASH})
+    RESOLVE_DEPENDENCY(GNA_EXT_DIR
+            ARCHIVE_UNIFIED "gna/gna_${GNA_VERSION}.zip"
+            TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
+            VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
+            FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
+            SHA256 ${GNA_HASH}
+            USE_NEW_LOCATION TRUE)
     update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
     debug_message(STATUS "gna=" ${GNA_EXT_DIR})
 
@@ -343,8 +344,57 @@ if(ENABLE_INTEL_GNA)
     else ()
         message(FATAL_ERROR "GNA not supported on this platform, only linux, and windows")
     endif ()
+
     set(GNA_LIB_DIR x64 CACHE STRING "" FORCE)
     set(GNA_PATH ${GNA_EXT_DIR}/${GNA_PLATFORM_DIR}/${GNA_LIB_DIR} CACHE STRING "" FORCE)
+
+    if (WIN32)
+        message(STATUS "Renaming gna.dll to gna_preproc.dll")
+        execute_process(COMMAND ${CMAKE_COMMAND} -E rename gna.dll gna_preproc.dll
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "rename rv: ${rv}")
+        message(STATUS "rename err: ${err}")
+
+        string(REPLACE "lib.exe" "dumpbin.exe" OBJDUMP ${CMAKE_AR})
+        message(STATUS "OBJDUMP: ${OBJDUMP}")
+
+        execute_process(COMMAND ${OBJDUMP} /EXPORTS gna_preproc.dll /OUT:gna_preproc.dll.exports
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "dumpin rv: ${rv}")
+        message(STATUS "dumpbin err: ${err}")
+
+        set(DEF_FILE ${GNA_PATH}/gna_preproc.def)
+        FILE(WRITE ${DEF_FILE} "LIBRARY gna_preproc\n")
+        FILE(APPEND ${DEF_FILE} "EXPORTS\n")
+
+        execute_process(COMMAND powershell -Command "(gc gna_preproc.dll.exports) -match \'\\s*(\\d+)\\s+[A-Z0-9]+\\s+[A-Z0-9]{8}\\s+([^ ]+(?: = [^ ]+)?)\\s*\' -replace \'\\s*(\\d+)\\s+[A-Z0-9]+\\s+[A-Z0-9]{8}\\s+([^ ]+(?: = [^ ]+)?)\\s*\', \'    $2   @$1\' | Out-File -encoding ASCII ${DEF_FILE} -append"
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "regexp rv: ${rv}")
+        message(STATUS "regexp err: ${err}")
+
+        execute_process(COMMAND ${CMAKE_AR} /MACHINE:x64 /def:${DEF_FILE}
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "lib rv: ${rv}")
+        message(STATUS "lib err: ${err}")
+
+        execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f gna.lib gna_preproc.dll.exports
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+    endif ()
 
     if(NOT BUILD_SHARED_LIBS)
         list(APPEND PATH_VARS "GNA_PATH")
