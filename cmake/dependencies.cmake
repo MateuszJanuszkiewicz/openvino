@@ -318,24 +318,9 @@ if(ENABLE_INTEL_GNA)
             GNA_LIB_DIR
             libGNA_INCLUDE_DIRS
             libGNA_LIBRARIES_BASE_PATH)
+
     set(GNA_VERSION "03.05.00.1472.1")
     set(GNA_HASH "2175cf3c39d3f8e5eb09bb6602d64b2c944ee8249bb927567d019353cb7165f0")
-
-    set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
-    if(WIN32)
-        LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/win64)
-    else()
-        LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/linux)
-    endif()
-
-    RESOLVE_DEPENDENCY(GNA_EXT_DIR
-            ARCHIVE_UNIFIED "GNA/GNA_${GNA_VERSION}.zip"
-            TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
-            VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
-            FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
-            SHA256 ${GNA_HASH})
-    update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
-    debug_message(STATUS "gna=" ${GNA_EXT_DIR})
 
     if (WIN32)
         set(GNA_PLATFORM_DIR win64 CACHE STRING "" FORCE)
@@ -344,6 +329,20 @@ if(ENABLE_INTEL_GNA)
     else ()
         message(FATAL_ERROR "GNA not supported on this platform, only linux, and windows")
     endif ()
+
+    set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
+    LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/${GNA_PLATFORM_DIR})
+
+    set(IE_PATH_TO_DEPS "gna_temp")
+    RESOLVE_DEPENDENCY(GNA_EXT_DIR
+            ARCHIVE_UNIFIED "GNA/GNA_${GNA_VERSION}.zip"
+            TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
+            VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
+            FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
+            SHA256 ${GNA_HASH})
+    unset(IE_PATH_TO_DEPS)
+    update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
+    debug_message(STATUS "gna=" ${GNA_EXT_DIR})
 
     set(GNA_LIB_DIR x64 CACHE STRING "" FORCE)
     set(GNA_PATH ${GNA_EXT_DIR}/${GNA_PLATFORM_DIR}/${GNA_LIB_DIR} CACHE STRING "" FORCE)
