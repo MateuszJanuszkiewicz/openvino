@@ -329,7 +329,7 @@ if(ENABLE_INTEL_GNA)
     endif()
 
     RESOLVE_DEPENDENCY(GNA_EXT_DIR
-            ARCHIVE_UNIFIED "gna/gna_${GNA_VERSION}.zip"
+            ARCHIVE_UNIFIED "GNA/GNA_${GNA_VERSION}.zip"
             TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
             VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
             FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
