@@ -333,8 +333,7 @@ if(ENABLE_INTEL_GNA)
             TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
             VERSION_REGEX ".*_([0-9]+.[0-9]+.[0-9]+.[0-9]+).*"
             FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
-            SHA256 ${GNA_HASH}
-            USE_NEW_LOCATION TRUE)
+            SHA256 ${GNA_HASH})
     update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
     debug_message(STATUS "gna=" ${GNA_EXT_DIR})
 
