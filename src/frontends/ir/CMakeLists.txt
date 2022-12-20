@@ -9,6 +9,6 @@ ov_add_frontend(NAME ir
                                openvino::runtime::dev)
 
 if(WIN32)
-    set_property(TARGET openvino_ir_frontend APPEND_STRING PROPERTY LINK_FLAGS "/PDBSTRIPPED:openvino_ir_frontend_STRIPPED.pdb")
+    set_target_properties(openvino_ir_frontend PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/PDBSTRIPPED:openvino_ir_frontend_STRIPPED.pdb")
     target_link_options(openvino_ir_frontend PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:openvino_ir_frontend>)
 endif()

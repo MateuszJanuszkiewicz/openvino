@@ -84,7 +84,7 @@ function(ie_add_plugin)
 
         if(WIN32)
             set_target_properties(${IE_PLUGIN_NAME} PROPERTIES COMPILE_PDB_NAME ${IE_PLUGIN_NAME})
-            set_property(TARGET ${IE_PLUGIN_NAME} APPEND_STRING PROPERTY LINK_FLAGS /PDBSTRIPPED:${IE_PLUGIN_NAME}_STRIPPED.pdb)
+            set_target_properties(${IE_PLUGIN_NAME} PROPERTIES LINK_FLAGS_RELWITHDEBINFO /PDBSTRIPPED:${IE_PLUGIN_NAME}_STRIPPED.pdb)
             target_link_options(${IE_PLUGIN_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${IE_PLUGIN_NAME}>)
         endif()
 
