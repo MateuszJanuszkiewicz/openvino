@@ -14,7 +14,7 @@ add_library(openvino::runtime::c ALIAS ${TARGET_NAME})
 
 if(WIN32)
     set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
-    set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS /PDBSTRIPPED:${TARGET_NAME}_STRIPPED.pdb)
+    set_property(TARGET ${TARGET_NAME} APPEND_STRING PROPERTY LINK_FLAGS /PDBSTRIPPED:${TARGET_NAME}_STRIPPED.pdb)
     target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
 endif()
 
