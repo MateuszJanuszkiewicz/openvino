@@ -297,7 +297,7 @@ if(ENABLE_INTEL_GNA)
             libGNA_INCLUDE_DIRS
             libGNA_LIBRARIES_BASE_PATH)
     set(GNA_VERSION "03.05.00.1906")
-    set(GNA_HASH "4a5be86d9c026b0e10afac2a57fc7c99d762b30e3d506abb3a3380fbcfe2726e")
+    set(GNA_HASH "5dc0ee62b21d7c2c348c226ab9c8f6b98481e23095ab99debf5c33854da8a475")
 
     if (WIN32)
         set(GNA_PLATFORM_DIR win64 CACHE STRING "" FORCE)
