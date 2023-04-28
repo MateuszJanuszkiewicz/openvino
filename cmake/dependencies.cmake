@@ -310,6 +310,7 @@ if(ENABLE_INTEL_GNA)
     set(FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/include)
     LIST(APPEND FILES_TO_EXTRACT_LIST gna_${GNA_VERSION}/${GNA_PLATFORM_DIR})
 
+    set(IE_PATH_TO_DEPS "gna_temp")
     RESOLVE_DEPENDENCY(GNA_EXT_DIR
             ARCHIVE_UNIFIED "gna/gna_${GNA_VERSION}.zip"
             TARGET_PATH "${TEMP}/gna_${GNA_VERSION}"
@@ -317,6 +318,7 @@ if(ENABLE_INTEL_GNA)
             FILES_TO_EXTRACT FILES_TO_EXTRACT_LIST
             SHA256 ${GNA_HASH}
             USE_NEW_LOCATION TRUE)
+    unset(IE_PATH_TO_DEPS)
     update_deps_cache(GNA_EXT_DIR "${GNA_EXT_DIR}" "Path to GNA root folder")
     debug_message(STATUS "gna=" ${GNA_EXT_DIR})
 
