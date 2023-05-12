@@ -43,7 +43,7 @@ else()
     set(IE_C_CXX_FLAGS "${IE_C_CXX_FLAGS} /guard:cf")
     set(IE_LINKER_FLAGS "${IE_LINKER_FLAGS} /guard:cf")
     if(ENABLE_INTEGRITYCHECK)
-        set(IE_LINKER_FLAGS "${IE_LINKER_FLAGS} /INTEGRITYCHECK")
+       # set(IE_LINKER_FLAGS "${IE_LINKER_FLAGS} /INTEGRITYCHECK")
     endif()
 endif()
 

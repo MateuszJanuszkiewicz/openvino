@@ -25,7 +25,7 @@ else()
 endif()
 ie_option (TREAT_WARNING_AS_ERROR "Treat build warnings as errors" ${TREAT_WARNING_AS_ERROR_DEFAULT})
 
-ie_dependent_option (ENABLE_INTEGRITYCHECK "build DLLs with /INTEGRITYCHECK flag" OFF "${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC" OFF)
+ie_dependent_option (ENABLE_INTEGRITYCHECK "build DLLs with /INTEGRITYCHECK flag" OFF "{CMAKE_CXX_COMPILER_ID} STREQUAL MSVC" OFF)
 
 ie_option (ENABLE_SANITIZER "enable checking memory errors via AddressSanitizer" OFF)
 
