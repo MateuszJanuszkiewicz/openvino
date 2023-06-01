@@ -4,16 +4,17 @@
 
 set(TARGET_NAME openvino_c)
 
-if(WIN32)
-    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
-endif()
-
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS ${OpenVINO_C_API_SOURCE_DIR}/include/*.h)
 
 # create library
 add_library(${TARGET_NAME} ${HEADERS} ${SOURCES})
 add_library(openvino::runtime::c ALIAS ${TARGET_NAME})
+
+if(WIN32)
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+    target_link_options(${TARGET_NAME} PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:${TARGET_NAME}>)
+endif()
 
 target_link_libraries(${TARGET_NAME} PRIVATE openvino openvino::util)
 
