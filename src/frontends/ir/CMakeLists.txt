@@ -9,5 +9,5 @@ if(ENABLE_TESTS)
 endif()
 
 if(WIN32)
-    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+    target_link_options(openvino_ir_frontend PRIVATE /PDBALTPATH:$<TARGET_PDB_FILE_NAME:openvino_ir_frontend>)
 endif()
