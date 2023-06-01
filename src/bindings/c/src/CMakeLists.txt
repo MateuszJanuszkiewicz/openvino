@@ -4,6 +4,10 @@
 
 set(TARGET_NAME openvino_c)
 
+if(WIN32)
+    set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME}_preproc)
+endif()
+
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS ${OpenVINO_C_API_SOURCE_DIR}/include/*.h)
 
