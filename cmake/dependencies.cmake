@@ -356,6 +356,54 @@ if(ENABLE_INTEL_GNA)
     endif ()
     set(GNA_LIB_DIR x64 CACHE STRING "" FORCE)
     set(GNA_PATH ${GNA_EXT_DIR}/${GNA_PLATFORM_DIR}/${GNA_LIB_DIR} CACHE STRING "" FORCE)
+    
+    if (WIN32)
+        message(STATUS "Renaming gna.dll to gna_preproc.dll")
+        execute_process(COMMAND ${CMAKE_COMMAND} -E rename gna.dll gna_preproc.dll
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "rename rv: ${rv}")
+        message(STATUS "rename err: ${err}")
+
+        string(REPLACE "lib.exe" "dumpbin.exe" OBJDUMP ${CMAKE_AR})
+        message(STATUS "OBJDUMP: ${OBJDUMP}")
+
+        execute_process(COMMAND ${OBJDUMP} /EXPORTS gna_preproc.dll /OUT:gna_preproc.dll.exports
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "dumpin rv: ${rv}")
+        message(STATUS "dumpbin err: ${err}")
+
+        set(DEF_FILE ${GNA_PATH}/gna_preproc.def)
+        FILE(WRITE ${DEF_FILE} "LIBRARY gna_preproc\n")
+        FILE(APPEND ${DEF_FILE} "EXPORTS\n")
+
+        execute_process(COMMAND powershell -Command "(gc gna_preproc.dll.exports) -match \'\\s*(\\d+)\\s+[A-Z0-9]+\\s+[A-Z0-9]{8}\\s+([^ ]+(?: = [^ ]+)?)\\s*\' -replace \'\\s*(\\d+)\\s+[A-Z0-9]+\\s+[A-Z0-9]{8}\\s+([^ ]+(?: = [^ ]+)?)\\s*\', \'    $2   @$1\' | Out-File -encoding ASCII ${DEF_FILE} -append"
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "regexp rv: ${rv}")
+        message(STATUS "regexp err: ${err}")
+
+        execute_process(COMMAND ${CMAKE_AR} /MACHINE:x64 /def:${DEF_FILE}
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+        message(STATUS "lib rv: ${rv}")
+        message(STATUS "lib err: ${err}")
+
+        execute_process(COMMAND ${CMAKE_COMMAND} -E rm -f gna.lib gna_preproc.dll.exports
+          WORKING_DIRECTORY ${GNA_PATH}
+          RESULT_VARIABLE rv
+          ERROR_VARIABLE err)
+
+    endif ()
 
     if(NOT BUILD_SHARED_LIBS)
         list(APPEND PATH_VARS "GNA_PATH")
